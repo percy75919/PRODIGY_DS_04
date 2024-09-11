@@ -1,0 +1,51 @@
+# Import necessary libraries
+import pandas as pd
+from textblob import TextBlob
+import matplotlib.pyplot as plt
+
+# Load dataset with proper column names
+col_names = ['ID', 'Entity', 'Sentiments', 'Content']
+df = pd.read_csv('twitter_training.csv', names=col_names)
+
+# Display the first few records
+print("Dataset Overview:\n", df.head())
+
+# Basic dataset information and exploration
+print("\nDataset Shape:", df.shape)
+print("\nMissing Values per Column:\n", df.isnull().sum())
+print("\nDuplicated Rows:", df.duplicated().sum())
+
+# Drop missing values and duplicates
+df.dropna(inplace=True)
+df.drop_duplicates(inplace=True)
+
+# Recheck for missing values and duplicates after cleaning
+print("\nMissing Values after Cleaning:\n", df.isnull().sum())
+print("\nDuplicated Rows after Cleaning:", df.duplicated().sum())
+print("\nUpdated Dataset Shape:", df.shape)
+
+# Distribution of sentiments in the dataset
+sentiment_counts = df['Sentiments'].value_counts()
+print("\nSentiment Distribution:\n", sentiment_counts)
+
+# Plot sentiment distribution
+plt.figure(figsize=(6, 3))
+sentiment_counts.plot(kind='bar', color=['red', 'green', 'blue', 'yellow'])
+plt.title('Sentiment Distribution')
+plt.xlabel('Sentiments')
+plt.ylabel('Number of Tweets')
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+
+# Filter data related to a specific brand (e.g., Microsoft)
+brand_data = df[df['Entity'].str.contains('Microsoft', case=False)]
+brand_sentiment_counts = brand_data['Sentiments'].value_counts()
+print("\nMicrosoft Brand Sentiment Distribution:\n", brand_sentiment_counts)
+
+# Plot pie chart for brand sentiment distribution
+plt.figure(figsize=(6, 6))
+plt.pie(brand_sentiment_counts, labels=brand_sentiment_counts.index, autopct='%1.1f%%', startangle=140, colors=['#ff9999', '#66b3ff', '#99ff99', '#ffcc99'])
+plt.title('Sentiment Distribution for Microsoft')
+plt.tight_layout()
+plt.show()
